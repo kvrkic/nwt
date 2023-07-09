@@ -1,27 +1,22 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import './App.css';
+import Content from './components/Content';
+import Index from './components/Index';
+import Login from './components/Login';
+import Register from './components/Register';
 
-function App() {
-  const [data, setData] = useState('');
-
-  useEffect(() => {
-    axios
-      .get('https://api.chucknorris.io/jokes/random')
-      .then(response => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setData(response.data.value); // Access the 'value' property containing the joke
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-
+const App = () => {
   return (
     <>
-      <div>{data}</div>
+      <Index />
+      <Register />
+      {/* 
+      handle error:
+      if(error), call component Login with prop error, if no error, call without prop error; 
+      */}
+      <Login />
+      <Content email="karlo" data="nista" />
     </>
   );
-}
+};
 
 export default App;
