@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from './Header';
 
 interface LoginProps {
   error?: string;
@@ -7,6 +8,7 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ error }) => {
   return (
     <>
+      <Header />
       <div className="container">
         <h3>Log in:</h3>
         <form action="/login" method="post">

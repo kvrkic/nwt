@@ -4,7 +4,7 @@
   font-family: 'DM Sans', sans-serif;
 }
 
-div h1 {
+.header{
   text-decoration: none;
   color: black;
   font-size: 8vh;
@@ -21,6 +21,7 @@ body {
 .footer {
   margin-top: auto;
   align-self: center;
+  margin-bottom: 10px;
 }
 
 footer div a {
@@ -32,7 +33,7 @@ footer div a {
   font-size: 3vh;
   flex-direction: column;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   margin-top: 50px;
 }
 
