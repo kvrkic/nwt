@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from './Header';
 
 interface ContentProps {
   email: string;
@@ -7,17 +8,20 @@ interface ContentProps {
 
 const Content: React.FC<ContentProps> = ({ email, data }) => {
   return (
-    <div className="welcome">
-      <p>
-        Email sent to: <br />
-        <strong>{email}</strong>
-        <br />
-        with a joke: <br />
-      </p>
-      <p>
-        <strong>{data}</strong>
-      </p>
-    </div>
+    <>
+      <Header />
+      <div className="welcome">
+        <p>
+          Email sent to: <br />
+          <strong>{email}</strong>
+          <br />
+          with a joke: <br />
+        </p>
+        <p>
+          <strong>{data}</strong>
+        </p>
+      </div>
+    </>
   );
 };
 
