@@ -24,7 +24,7 @@ export class UsersService {
     private readonly emailsService: EmailsService,
   ) {}
 
-  public async create(createValues: RegistrationRequestDto): Promise<void> {
+  public async create(createValues: RegistrationRequestDto): Promise<string> {
     const { email } = createValues;
 
     const existingUser = await this.userModel.findOne({ email }).exec();
@@ -56,6 +56,8 @@ export class UsersService {
         newUser.email,
         verificationToken,
       );
+
+      return 'User created successfully';
     } catch (error) {
       throw new HttpException(
         ErrorMessage.EMAIL_ERROR,

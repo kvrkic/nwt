@@ -1,13 +1,17 @@
 import { useRouteError } from 'react-router-dom';
+import Header from './Header';
 
 export default function ErrorPage() {
   const error = useRouteError();
   console.error(error);
 
   return (
-    <div className="welcome">
-      <h3>404: Not Found</h3>
-      <p>Sorry, an unexpected error has occurred.</p>
-    </div>
+    <>
+      <Header />
+      <div className="welcome">
+        <h3>404: Not Found</h3>
+        <p>Route doesn't exist</p>
+      </div>
+    </>
   );
 }
