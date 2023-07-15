@@ -7,6 +7,8 @@ import ErrorPage from './components/ErrorPage';
 import Register from './components/Register';
 import Login from './components/Login';
 import Content from './components/Content';
+import Verify from './components/Verify';
+import Resend from './components/Resend';
 
 const router = createBrowserRouter([
   {
@@ -24,7 +26,16 @@ const router = createBrowserRouter([
   },
   {
     path: 'users',
-    element: <Content email="karlo" data="nista" />,
+    element: <Content />,
+    // element: <Content email="karlo" data="nista" />,
+  },
+  {
+    path: 'verify',
+    element: <Verify />,
+  },
+  {
+    path: 'resend',
+    element: <Resend />,
   },
 ]);
 

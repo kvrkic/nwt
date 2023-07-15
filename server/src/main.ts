@@ -7,6 +7,8 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Chuck Norris API')
     .setDescription('Chuck Norris jokes authorized API with nestjs')

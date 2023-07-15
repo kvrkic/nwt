@@ -23,7 +23,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('/register')
-  public create(@Body() values: RegistrationRequestDto): Promise<void> {
+  public create(@Body() values: RegistrationRequestDto): Promise<string> {
     return this.usersService.create(values);
   }
 
