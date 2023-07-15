@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useState } from 'react';
 import Header from './Header';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
+import { ErrorResponse } from '../interfaces/error-response.interface';
+import { ErrorMessageEnum } from '../enums/errors.enum';
 
 const Register = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -12,7 +14,7 @@ const Register = () => {
 
     const formData = new FormData(event.currentTarget);
 
-    const data = {
+    const payload = {
       firstName: formData.get('firstName') as string,
       lastName: formData.get('lastName') as string,
       email: formData.get('email') as string,
@@ -20,30 +22,37 @@ const Register = () => {
     };
 
     try {
-      const response = await axios.post<AxiosResponse<string>>(
+      const { data } = await axios.post<string>(
         'http://localhost:3000/users/register',
-        data,
+        payload,
       );
-      console.log(response);
-      // @todo
-      // krenia san pisat ovo
+
+      if (data === 'User created successfully') {
+        setIsVisible(false);
+      }
       // axios post na /users/register, napisat poruku da triba verificirat mail,
       // napravit novu komponentu i path /verify na koji ce ga vodit link iz maila
       // poigrat se sa query parametrima, primit token iz maila i napravit axios post sa tokenon
       // prikazat korisniku poruku da je verificirat uspjesno ili nije, smislit sta onda
       // resend path napravit slicno ko i verify, koji radi axios post na backend sa mailon u bodyu
       // i onda prikaze odgovor korisniku
-
-      // if (response.data === 'User created') {
-      //   console.log('tocno tako je i bilo');
-      // }
-      // if(response.data == Object)
-
-      console.log(response.data);
-      setIsVisible(false);
     } catch (error) {
-      console.error(error);
-      setErrorMessage('There was an error');
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        const errorMessage = axiosError?.response?.data?.message;
+        switch (errorMessage) {
+          case ErrorMessageEnum.EMAIL_ALREADY_USED:
+            setErrorMessage(ErrorMessageEnum.EMAIL_ALREADY_USED);
+            break;
+          case ErrorMessageEnum.EMAIL_ERROR:
+            setErrorMessage(ErrorMessageEnum.EMAIL_ERROR);
+            break;
+          default:
+            setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+        }
+      } else {
+        setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+      }
     }
   };
 

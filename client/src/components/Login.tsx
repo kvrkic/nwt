@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useState } from 'react';
 import Header from './Header';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { LoginResponse } from '../interfaces/login-response.interface';
+import { ErrorResponse } from '../interfaces/error-response.interface';
+import { ErrorMessageEnum } from '../enums/errors.enum';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -13,27 +15,39 @@ const Login = () => {
 
     const formData = new FormData(event.currentTarget);
 
-    const data = {
+    const payload = {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
     };
 
     try {
-      const response = await axios.post<AxiosResponse<string | LoginResponse>>(
+      const { data } = await axios.post<LoginResponse>(
         'http://localhost:3000/users/login',
-        data,
+        payload,
       );
-      console.log(response);
-
-      //handle reponses from server
-      //set cookie to browser and redirect to content
-      //popravit email na backendu da salje na /verify
-
-      console.log(response.data);
       setIsVisible(false);
+      //set cookie
+      //redirect to content with data sent as props
     } catch (error) {
-      console.error(error);
-      setErrorMessage('There was an error');
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        const errorMessage = axiosError?.response?.data?.message;
+        switch (errorMessage) {
+          case ErrorMessageEnum.USER_DOESNT_EXIST:
+            setErrorMessage(ErrorMessageEnum.USER_DOESNT_EXIST);
+            break;
+          case ErrorMessageEnum.INCORRECT_PASSWORD:
+            setErrorMessage(ErrorMessageEnum.INCORRECT_PASSWORD);
+            break;
+          case ErrorMessageEnum.VERIFY_EMAIL:
+            setErrorMessage(ErrorMessageEnum.VERIFY_EMAIL);
+            break;
+          default:
+            setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+        }
+      } else {
+        setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+      }
     }
   };
   return (
