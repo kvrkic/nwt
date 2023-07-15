@@ -26,6 +26,7 @@ const Login = () => {
         payload,
       );
       setIsVisible(false);
+      setErrorMessage('');
       //set cookie
       //redirect to content with data sent as props
     } catch (error) {
