@@ -29,13 +29,8 @@ const Register = () => {
 
       if (data === 'User created successfully') {
         setIsVisible(false);
+        setErrorMessage('');
       }
-      // axios post na /users/register, napisat poruku da triba verificirat mail,
-      // napravit novu komponentu i path /verify na koji ce ga vodit link iz maila
-      // poigrat se sa query parametrima, primit token iz maila i napravit axios post sa tokenon
-      // prikazat korisniku poruku da je verificirat uspjesno ili nije, smislit sta onda
-      // resend path napravit slicno ko i verify, koji radi axios post na backend sa mailon u bodyu
-      // i onda prikaze odgovor korisniku
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ErrorResponse>;
