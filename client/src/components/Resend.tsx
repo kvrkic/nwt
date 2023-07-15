@@ -1,25 +1,66 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './Header';
+import { useLocation } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import { ErrorResponse } from '../interfaces/error-response.interface';
+import { ErrorMessageEnum } from '../enums/errors.enum';
 
-// const Verify = (queryParams) => {
 const Resend = () => {
   const [isSuccessful, setIsSuccessful] = useState(false);
-  //mozda stavit da nije boolean nego string da prikazen error this user doesnt exist
-  //error sending mail
-  //email is already verified
+  const [errorMessage, setErrorMessage] = useState('');
 
-  //check queryParams
-  //axios post to server /Resend
-  //if response = Verification email has been resent
-  // setIsSuccessful(true)
+  const location = useLocation();
+
+  useEffect(() => {
+    const resendEmail = async () => {
+      try {
+        const queryParams = new URLSearchParams(location.search);
+
+        const email = queryParams.get('email');
+
+        const { data } = await axios.post<string>(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `http://localhost:3000/users/resend?email=${email}`,
+        );
+        if (data === ErrorMessageEnum.EMAIL_ALREADY_VERIFIED) {
+          setErrorMessage(ErrorMessageEnum.EMAIL_ALREADY_VERIFIED);
+        }
+
+        if (!isSuccessful && data === 'Verification email has been resent') {
+          setIsSuccessful(true);
+          setErrorMessage('');
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ErrorResponse>;
+          const errorMessage = axiosError?.response?.data?.message;
+
+          switch (errorMessage) {
+            case ErrorMessageEnum.USER_DOESNT_EXIST:
+              setErrorMessage(ErrorMessageEnum.USER_DOESNT_EXIST);
+              break;
+            case ErrorMessageEnum.EMAIL_ERROR:
+              setErrorMessage(ErrorMessageEnum.EMAIL_ERROR);
+              break;
+            default:
+              setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+          }
+        } else {
+          setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+        }
+      }
+    };
+    void resendEmail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   return (
     <>
       <Header />
       {isSuccessful && (
-        <div className="welcome">Email is successfully resent</div>
+        <div className="welcome">Verification email has been resent</div>
       )}
-      {!isSuccessful && <div className="welcome">Error</div>}
+      {errorMessage && <div className="welcome">{errorMessage}</div>}
     </>
   );
 };

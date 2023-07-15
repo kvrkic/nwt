@@ -1,15 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './Header';
+import { useLocation } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import { ErrorMessageEnum } from '../enums/errors.enum';
+import { ErrorResponse } from '../interfaces/error-response.interface';
+import { LoginResponse } from '../interfaces/login-response.interface';
 
-// const Verify = (queryParams) => {
 const Verify = () => {
   const [isSuccessful, setIsSuccessful] = useState(false);
-  //mozda stavit da nije boolean nego string da prikazen error this user doesnt exist
+  const [errorMessage, setErrorMessage] = useState('');
 
-  //check queryParams
-  //axios post to server /verify
-  //if response = return loginResponse(user(firstname, lastname, email), access token)
-  // setIsSuccessful(true)
+  const location = useLocation();
+
+  useEffect(() => {
+    const resendEmail = async () => {
+      try {
+        const queryParams = new URLSearchParams(location.search);
+
+        const token = queryParams.get('token');
+
+        const { data } = await axios.post<LoginResponse>(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `http://localhost:3000/users/verify?token=${token}`,
+        );
+
+        setIsSuccessful(true);
+        setErrorMessage('');
+        //set cookie
+        //redirect to content with data sent as props
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<ErrorResponse>;
+          const errorMessage = axiosError?.response?.data?.message;
+
+          switch (errorMessage) {
+            case ErrorMessageEnum.USER_DOESNT_EXIST:
+              setErrorMessage(ErrorMessageEnum.USER_DOESNT_EXIST);
+              break;
+            default:
+              setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+          }
+        } else {
+          setErrorMessage(ErrorMessageEnum.UNKNOWN_ERROR);
+        }
+      }
+    };
+    void resendEmail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   return (
     <>
@@ -17,7 +55,7 @@ const Verify = () => {
       {isSuccessful && (
         <div className="welcome">Email is successfully verified</div>
       )}
-      {!isSuccessful && <div className="welcome">Error</div>}
+      {errorMessage && <div className="welcome">{errorMessage}</div>}
     </>
   );
 };
