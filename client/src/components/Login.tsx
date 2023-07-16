@@ -5,10 +5,15 @@ import axios, { AxiosError } from 'axios';
 import { LoginResponse } from '../interfaces/login-response.interface';
 import { ErrorResponse } from '../interfaces/error-response.interface';
 import { ErrorMessageEnum } from '../enums/errors.enum';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [, setCookie] = useCookies(['token', 'email']);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,8 +32,11 @@ const Login = () => {
       );
       setIsVisible(false);
       setErrorMessage('');
-      //set cookie
-      //redirect to content with data sent as props
+
+      setCookie('token', data.access_token);
+      setCookie('email', data.user.email);
+
+      navigate('/content');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ErrorResponse>;

@@ -7,8 +7,8 @@ const Index = () => {
       <Header />
       <div className="welcome">
         <p>
-          Welcome! Please <Link to={`users/register`}>register</Link> or{' '}
-          <Link to={`users/login`}>login</Link> to continue
+          Welcome! Please <Link to={`register`}>register</Link> or{' '}
+          <Link to={`login`}>login</Link> to continue
         </p>
       </div>
     </>
