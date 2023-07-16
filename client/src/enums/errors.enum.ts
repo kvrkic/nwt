@@ -6,5 +6,6 @@ export enum ErrorMessageEnum {
   EMAIL_ALREADY_VERIFIED = 'Email is already verified',
   EMAIL_ERROR = 'Error sending email',
   VERIFY_EMAIL = 'Please verify your email',
+  UNAUTHORIZED = 'Unauthorized',
   UNKNOWN_ERROR = 'Something went wrong, please try again later',
 }

@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import Header from './Header';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { ErrorMessageEnum } from '../enums/errors.enum';
 import { ErrorResponse } from '../interfaces/error-response.interface';
 import { LoginResponse } from '../interfaces/login-response.interface';
+import { useCookies } from 'react-cookie';
 
 const Verify = () => {
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [, setCookie] = useCookies(['token', 'email']);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const resendEmail = async () => {
@@ -26,8 +29,11 @@ const Verify = () => {
 
         setIsSuccessful(true);
         setErrorMessage('');
-        //set cookie
-        //redirect to content with data sent as props
+
+        setCookie('token', data.access_token);
+        setCookie('email', data.user.email);
+
+        navigate('/content');
       } catch (error) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError<ErrorResponse>;
@@ -47,7 +53,7 @@ const Verify = () => {
     };
     void resendEmail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, []);
 
   return (
     <>

@@ -22,6 +22,7 @@ const Resend = () => {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `http://localhost:3000/users/resend?email=${email}`,
         );
+
         if (data === ErrorMessageEnum.EMAIL_ALREADY_VERIFIED) {
           setErrorMessage(ErrorMessageEnum.EMAIL_ALREADY_VERIFIED);
         }
@@ -52,7 +53,7 @@ const Resend = () => {
     };
     void resendEmail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, []);
 
   return (
     <>

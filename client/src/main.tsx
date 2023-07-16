@@ -17,17 +17,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: 'users/register',
+    path: 'register',
     element: <Register />,
   },
   {
-    path: 'users/login',
+    path: 'login',
     element: <Login />,
   },
   {
-    path: 'users',
+    path: 'content',
     element: <Content />,
-    // element: <Content email="karlo" data="nista" />,
   },
   {
     path: 'verify',
